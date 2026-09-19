@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neo-Tree | Linktree Neo-Brutalism Auto-Save</title>
+    <!-- Google Fonts: Syne & Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #FFFDF0;
+            --main-color: #FF5757;
+            --accent-yellow: #FFDE59;
+            --accent-blue: #00F0FF;
+            --accent-purple: #B967FF;
+            --dark-color: #121212;
+            --border-width: 4px;
+            --box-shadow: 5px 5px 0px #121212;
+            --box-shadow-hover: 8px 8px 0px #121212;
+            --box-shadow-active: 2px 2px 0px #121212;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--dark-color);
+            background-image: radial-gradient(#121212 1px, transparent 1px);
+            background-size: 24px 24px;
+            padding: 20px 10px 60px 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* Top Bar & Edit Toggle Button */
+        .top-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            display: none; /* Disembunyikan secara default, hanya muncul jika login */
+        }
+
+        .neo-btn {
+            background-color: var(--accent-yellow);
+            border: var(--border-width) solid var(--dark-color);
+            padding: 8px 14px;
+            font-weight: 700;
+            box-shadow: var(--box-shadow);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .neo-btn:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--box-shadow-hover);
+            background-color: var(--accent-blue);
+        }
+
+        .neo-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: var(--box-shadow-active);
+        }
+
+        /* Profile Card */
+        .profile-card {
+            background-color: white;
+            border: var(--border-width) solid var(--dark-color);
+            padding: 25px 20px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            margin-bottom: 25px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+
+        .avatar-container {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 15px auto;
+            border: var(--border-width) solid var(--dark-color);
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 3px 3px 0px var(--dark-color);
+            background-color: var(--accent-yellow);
+        }
+
+        .avatar-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+        }
+
+        .profile-bio {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 0 10px;
+        }
+
+        /* Social Icons Row */
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-purple);
+            border: 3px solid var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+            font-size: 1.1rem;
+            text-decoration: none;
+            box-shadow: 3px 3px 0px var(--dark-color);
+            transition: all 0.15s ease;
+        }
+
+        .social-icon:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0px var(--dark-color);
+            background-color: var(--main-color);
+            color: white;
+        }
+
+        .follower-badge {
+            display: inline-block;
+            background-color: var(--accent-blue);
+            border: 3px solid var(--dark-color);
+            padding: 4px 12px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            box-shadow: 3px 3px 0px var(--dark-color);
+            margin-top: 15px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 25px 0 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::after {
+            content: "";
+            flex: 1;
+            height: 3px;
+            background-color: var(--dark-color);
+        }
+
+        /* Link Items */
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .neo-link {
+            background-color: white;
+            border: var(--border-width) solid var(--dark-color);
+            padding: 15px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 700;
+            box-shadow: var(--box-shadow);
+            transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+            animation: slideUp 0.5s ease both;
+        }
+
+        .neo-link:nth-child(1) { background-color: #FFD166; }
+        .neo-link:nth-child(2) { background-color: #06D6A0; }
+        .neo-link:nth-child(3) { background-color: #118AB2; color: white; }
+        .neo-link:nth-child(4) { background-color: #EF476F; color: white; }
+        .neo-link:nth-child(n+5) { background-color: white; }
+
+        .neo-link:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .neo-link:active {
+            transform: translate(2px, 2px);
+            box-shadow: var(--box-shadow-active);
+        }
+
+        .link-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .link-thumb {
+            width: 45px;
+            height: 45px;
+            border: 3px solid var(--dark-color);
+            object-fit: cover;
+            background-color: white;
+            flex-shrink: 0;
+        }
+
+        .link-text {
+            font-size: 1rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .link-action-icon {
+            font-size: 1.1rem;
+            font-weight: bold;
+            padding-left: 10px;
+        }
+
+        /* Edit Panel */
+        .edit-panel {
+            display: none;
+            background: white;
+            border: var(--border-width) solid var(--dark-color);
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: 8px 8px 0px var(--dark-color);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .edit-panel h3 {
+            font-family: 'Syne', sans-serif;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            border-bottom: 3px solid var(--dark-color);
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 3px solid var(--dark-color);
+            background: #FFFDF0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .link-edit-item {
+            background: #f9f9f9;
+            border: 2px dashed var(--dark-color);
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+
+        /* Tombol Rahasia Login Owner di Footer */
+        .owner-login-trigger {
+            background: none;
+            border: none;
+            color: #777;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Bar Action (Hanya muncul jika sudah login owner) -->
+        <div class="top-action" id="topActionMenu">
+            <button class="neo-btn" style="background-color: var(--accent-purple); color: white;" onclick="resetToDefault()">
+                <i class="fa-solid fa-rotate-right"></i> Reset Default
+            </button>
+            <button class="neo-btn" onclick="toggleEditPanel()">
+                <i class="fa-solid fa-sliders"></i> Edit & Auto-Save
+            </button>
+        </div>
+
+        <!-- Profil Utama -->
+        <div class="profile-card">
+            <div class="avatar-container">
+                <img id="displayAvatar" src="" alt="Logo">
+            </div>
+            <h1 class="profile-name" id="displayName"></h1>
+            <p class="profile-bio" id="displayBio"></p>
+            
+            <div class="social-icons">
+                <a href="https://whatsapp.com" target="_blank" class="social-icon"><i class="fa-brands fa-whatsapp"></i></a>
+                <a href="https://instagram.com" target="_blank" class="social-icon"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://tiktok.com" target="_blank" class="social-icon"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://youtube.com" target="_blank" class="social-icon"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+
+            <div class="follower-badge">
+                <i class="fa-solid fa-users"></i> <span id="displayFollowers"></span> followers
+            </div>
+        </div>
+
+        <div class="section-title">
+            <i class="fa-solid fa-fire"></i> Menu Utama & Tautan
+        </div>
+
+        <!-- List Link -->
+        <div class="links-container" id="linksContainer"></div>
+
+        <!-- PANEL EDIT & AUTO SAVE (Hanya muncul jika sudah login owner) -->
+        <div class="edit-panel" id="editPanel">
+            <h3>⚡ Studio Pengaturan (Auto-Save Active)</h3>
+            <div class="form-group">
+                <label>Nama / Judul Store:</label>
+                <input type="text" id="inputName">
+            </div>
+            <div class="form-group">
+                <label>Bio / Deskripsi Singkat:</label>
+                <input type="text" id="inputBio">
+            </div>
+            <div class="form-group">
+                <label>URL Logo / Avatar Gambar:</label>
+                <input type="text" id="inputAvatar">
+            </div>
+            <div class="form-group">
+                <label>Jumlah Followers:</label>
+                <input type="text" id="inputFollowers">
+            </div>
+
+            <h3 style="margin-top: 20px; font-size: 1.1rem;">🔗 Kelola Tombol Link / Grup</h3>
+            <div id="linksEditorContainer"></div>
+            
+            <button class="neo-btn" style="background-color: var(--accent-blue); width: 100%; justify-content: center; margin-top: 10px;" onclick="addNewLinkField()">
+                <i class="fa-solid fa-plus"></i> Tambah Link Baru
+            </button>
+
+            <button class="neo-btn" style="background-color: var(--main-color); color: white; width: 100%; justify-content: center; margin-top: 15px;" onclick="saveChanges()">
+                <i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan Permanen
+            </button>
+        </div>
+
+        <footer>
+            Neo-Brutalism Linktree Engine &copy; 2026 <br>
+            <button class="owner-login-trigger" onclick="ownerLogin()">🔒 Login Owner</button>
+        </footer>
+    </div>
+
+    <script>
+        // --- PIN OWNER (DIAMANKAN) ---
+        const OWNER_PIN = "85773322"; 
+
+        // Data Default Awal
+        const defaultData = {
+            name: "RHEZABKWN | STORE",
+            bio: "Tersedia Joki, Akun, Gamepass di bloxfruits",
+            avatar: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150",
+            followers: "62.4K",
+            links: [
+                { title: "ORDER JOKI WA, GAMEPASS & AKUN", url: "https://whatsapp.com", thumb: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100" },
+                { title: "STOCK AKUN PERMANEN BKWN STORE", url: "https://instagram.com", thumb: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=100" },
+                { title: "BKWN STORE (ITEMKU)", url: "https://itemku.com", thumb: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=100" },
+                { title: "TESTIMONI | SALURAN WA", url: "https://whatsapp.com", thumb: "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=100" }
+            ]
+        };
+
+        // Muat Data dari localStorage atau gunakan Default
+        let siteData = JSON.parse(localStorage.getItem('neo_linktree_data')) || defaultData;
+
+        // Cek apakah sesi ini sudah login sebagai owner sebelumnya
+        let isOwnerLoggedIn = sessionStorage.getItem('owner_authenticated') === 'true';
+
+        // Render Tampilan Website
+        function renderWebsite() {
+            document.getElementById('displayName').innerText = siteData.name;
+            document.getElementById('displayBio').innerText = siteData.bio;
+            document.getElementById('displayAvatar').src = siteData.avatar;
+            document.getElementById('displayFollowers').innerText = siteData.followers;
+
+            let linksHTML = '';
+            siteData.links.forEach((link) => {
+                linksHTML += `
+                    <a href="${link.url}" target="_blank" class="neo-link">
+                        <div class="link-content">
+                            <img src="${link.thumb}" class="link-thumb" alt="icon">
+                            <span class="link-text">${link.title}</span>
+                        </div>
+                        <i class="fa-solid fa-arrow-up-right-from-square link-action-icon"></i>
+                    </a>
+                `;
+            });
+            document.getElementById('linksContainer').innerHTML = linksHTML;
+
+            // Jika status sudah login, tampilkan tombol aksi owner
+            if (isOwnerLoggedIn) {
+                document.getElementById('topActionMenu').style.display = 'flex';
+            }
+        }
+
+        // Fungsi Login Owner menggunakan PIN
+        function ownerLogin() {
+            if (isOwnerLoggedIn) {
+                alert("Anda sudah masuk sebagai Owner!");
+                document.getElementById('topActionMenu').style.display = 'flex';
+                return;
+            }
+
+            let pin = prompt("Masukkan PIN Owner:");
+            if (pin === OWNER_PIN) {
+                isOwnerLoggedIn = true;
+                sessionStorage.setItem('owner_authenticated', 'true');
+                document.getElementById('topActionMenu').style.display = 'flex';
+                alert("✅ Login Berhasil! Menu Edit & Auto-Save diaktifkan.");
+            } else if (pin !== null) {
+                alert("❌ PIN Salah! Akses ditolak.");
+            }
+        }
+
+        // Toggle Panel Edit
+        function toggleEditPanel() {
+            if (!isOwnerLoggedIn) {
+                alert("Akses ditolak! Fitur ini khusus Owner.");
+                return;
+            }
+            const panel = document.getElementById('editPanel');
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+            } else {
+                panel.style.display = 'block';
+                loadEditorInputs();
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }
+        }
+
+        // Load Input Form
+        function loadEditorInputs() {
+            document.getElementById('inputName').value = siteData.name;
+            document.getElementById('inputBio').value = siteData.bio;
+            document.getElementById('inputAvatar').value = siteData.avatar;
+            document.getElementById('inputFollowers').value = siteData.followers;
+
+            let editorHtml = '';
+            siteData.links.forEach((link, index) => {
+                editorHtml += `
+                    <div class="link-edit-item" id="link-edit-${index}">
+                        <div class="form-group">
+                            <label>Nama Link / Grup #${index+1}:</label>
+                            <input type="text" id="edit-title-${index}" value="${link.title}">
+                        </div>
+                        <div class="form-group">
+                            <label>Link URL (Web/Grup):</label>
+                            <input type="text" id="edit-url-${index}" value="${link.url}">
+                        </div>
+                        <div class="form-group">
+                            <label>URL Icon / Gambar Thumbnail:</label>
+                            <input type="text" id="edit-thumb-${index}" value="${link.thumb}">
+                        </div>
+                        <button class="neo-btn" style="background-color: var(--main-color); color: white; padding: 4px 8px; font-size: 0.8rem;" onclick="removeLink(${index})">Hapus Link Ini</button>
+                    </div>
+                `;
+            });
+            document.getElementById('linksEditorContainer').innerHTML = editorHtml;
+        }
+
+        // Tambah Link Baru di Editor
+        function addNewLinkField() {
+            siteData.links.push({
+                title: "Grup / Link Baru",
+                url: "https://",
+                thumb: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=100"
+            });
+            loadEditorInputs();
+        }
+
+        // Hapus Link Tertentu
+        function removeLink(index) {
+            siteData.links.splice(index, 1);
+            loadEditorInputs();
+        }
+
+        // Simpan Perubahan ke LocalStorage (Otomatis Tersimpan Permanen)
+        function saveChanges() {
+            siteData.name = document.getElementById('inputName').value;
+            siteData.bio = document.getElementById('inputBio').value;
+            siteData.avatar = document.getElementById('inputAvatar').value;
+            siteData.followers = document.getElementById('inputFollowers').value;
+
+            siteData.links.forEach((link, index) => {
+                let tElem = document.getElementById(`edit-title-${index}`);
+                let uElem = document.getElementById(`edit-url-${index}`);
+                let thElem = document.getElementById(`edit-thumb-${index}`);
+                if (tElem) link.title = tElem.value;
+                if (uElem) link.url = uElem.value;
+                if (thElem) link.thumb = thElem.value;
+            });
+
+            // Menyimpan otomatis ke memori browser
+            localStorage.setItem('neo_linktree_data', JSON.stringify(siteData));
+
+            renderWebsite();
+            document.getElementById('editPanel').style.display = 'none';
+            alert("✅ Berhasil Disimpan! Data Anda tersimpan otomatis.");
+        }
+
+        // Reset Data kembali ke Semula
+        function resetToDefault() {
+            if (confirm("Yakin ingin mereset semua data ke pengaturan awal?")) {
+                localStorage.removeItem('neo_linktree_data');
+                siteData = JSON.parse(JSON.stringify(defaultData));
+                renderWebsite();
+                alert("🔄 Data berhasil direset.");
+            }
+        }
+
+        // Inisialisasi Pertama
+        renderWebsite();
+    </script>
+</body>
+</html>
